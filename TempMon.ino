@@ -53,6 +53,10 @@ void setup() {
   //SD Library Setup
   //Initialize the default chipselect pin
   pinMode(defaultCSPin,OUTPUT);
+  
+  //Init the SD Card
+  //Since we are using the ethernet shield, we will init will the ethernet CS pin
+  //Using the defaultCSpin will result in failure
   if(SD.begin(ethernetCSPin)){
     Serial.println("SD Card Initialized Successfully");
   }
