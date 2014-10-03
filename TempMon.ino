@@ -17,7 +17,7 @@
 */
 #include <SPI.h>
 #include <Ethernet.h>
-
+#include <SD.h>
 
 byte mac[] = {
   // MAC printed on ethernet shield
@@ -29,6 +29,16 @@ IPAddress ip(192,168,0,177);
 // (port 80 is default for HTTP):
 EthernetServer server(80);
 
+//SD Library Preamble
+//0101010101010101010
+//The SD Card must be selected, which is done by setting the chipselect pin mode to OUTPUT
+//Even if the pin is unused, it must be set to OUTPUT or the SD library will fail
+
+//This is the default chipselect pin for arduino boards and needs to be initialized
+int defaultCSPin = 10;
+//The ethernet shield chip select pin is 4
+int ethernetCSPin = 4;
+
 void setup() {
  // Open serial communications and wait for port to open:
   Serial.begin(9600);
@@ -38,8 +48,18 @@ void setup() {
   server.begin();
   Serial.print("server is at ");
   Serial.println(Ethernet.localIP());
+  
+  
+  //SD Library Setup
+  //Initialize the default chipselect pin
+  pinMode(defaultCSPin,OUTPUT);
+  if(SD.begin(ethernetCSPin)){
+    Serial.println("SD Card Initialized Successfully");
   }
-
+  else{
+    Serial.println("Something went wrong when initializing the SD Card");
+  }
+}
 void loop() {
   // listen for incoming clients
   EthernetClient client = server.available();
